@@ -7,9 +7,13 @@ import EmptyState from '@/components/crm/EmptyState';
 
 interface LogEntry {
   id: number;
-  user: string;
+  user: {
+    first_name?: string;
+    last_name?: string;
+    email: string;
+  };
   action: string;
-  model: string;
+  model_name: string;
   object_id: string | number;
   timestamp: string;
   [key: string]: unknown;
@@ -41,13 +45,23 @@ export default function ActivityLogPage() {
   useEffect(() => { fetchLogs(); }, [fetchLogs]);
 
   const columns = [
-    { key: 'user', label: 'User' },
+    { 
+      key: 'user', 
+      label: 'User',
+      render: (r: LogEntry) => {
+        if (!r.user) return 'System';
+        if (r.user.first_name || r.user.last_name) {
+          return `${r.user.first_name || ''} ${r.user.last_name || ''}`.trim();
+        }
+        return r.user.email;
+      }
+    },
     {
       key: 'action',
       label: 'Action',
       render: (r: LogEntry) => <Badge label={r.action} variant={actionVariant(r.action)} />,
     },
-    { key: 'model', label: 'Model' },
+    { key: 'model_name', label: 'Model' },
     { key: 'object_id', label: 'Object ID' },
     {
       key: 'timestamp',
