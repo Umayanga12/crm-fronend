@@ -1,5 +1,5 @@
 import { NavLink, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Building2, Activity, LogOut, Users } from 'lucide-react';
+import { LayoutDashboard, Building2, Activity, LogOut, Users, Contact2 } from 'lucide-react';
 import useAuthStore from '@/store/useAuthStore';
 import Badge from '@/components/crm/Badge';
 import { cn } from '@/lib/utils';
@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils';
 const navItems = [
   { label: 'Dashboard', to: '/dashboard', icon: LayoutDashboard },
   { label: 'Companies', to: '/companies', icon: Building2 },
+  { label: 'Contacts', to: '/contacts', icon: Contact2 },
   { label: 'Activity Log', to: '/activity-logs', icon: Activity },
 ];
 

@@ -9,6 +9,7 @@ import DashboardPage from './pages/DashboardPage';
 import CompaniesPage from './pages/CompaniesPage';
 import CompanyDetailPage from './pages/CompanyDetailPage';
 import ActivityLogPage from './pages/ActivityLogPage';
+import ContactsPage from './pages/ContactsPage';
 import TeamPage from './pages/TeamPage';
 import NotFound from './pages/NotFound';
 import { useEffect, useState } from 'react';
@@ -35,6 +36,7 @@ function App() {
             <Route path="dashboard" element={<DashboardPage />} />
             <Route path="companies" element={<CompaniesPage />} />
             <Route path="companies/:id" element={<CompanyDetailPage />} />
+            <Route path="contacts" element={<ContactsPage />} />
             <Route path="activity-logs" element={<ActivityLogPage />} />
             <Route path="team" element={<TeamPage />} />
           </Route>

@@ -10,6 +10,10 @@ export const contactService = {
     const res = await api.get(`/companies/${companyId}/contacts/`, { params });
     return res.data;
   },
+  getAllContacts: async (params: ContactParams = {}) => {
+    const res = await api.get('/contacts/', { params });
+    return res.data;
+  },
   createContact: async (companyId: string | number, data: Record<string, unknown>) => {
     const res = await api.post(`/companies/${companyId}/contacts/`, data);
     return res.data;
