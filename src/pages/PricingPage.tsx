@@ -71,11 +71,24 @@ export default function PricingPage() {
     
     setUpdatingPlan(planName);
     try {
-      await organizationService.updateOrganization(organization.id, {
+      const updatedOrg = await organizationService.updateOrganization(organization.id, {
         subscription_plan: planName as any
       });
+      const newOrg = updatedOrg.data || updatedOrg;
+      setOrganization(newOrg);
+      
+      // Sync global store
+      if (user) {
+        useAuthStore.getState().setUser({
+          ...user,
+          organization: {
+            ...user.organization,
+            subscription_plan: planName
+          }
+        });
+      }
+      
       toast.success(`Successfully switched to ${planName} plan`);
-      fetchOrganization();
     } catch {
       toast.error('Failed to update subscription plan');
     } finally {

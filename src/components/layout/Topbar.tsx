@@ -6,6 +6,7 @@ const pageTitles: Record<string, string> = {
   '/dashboard': 'Dashboard',
   '/companies': 'Companies',
   '/activity-logs': 'Activity Log',
+  '/pricing': 'Subscription',
 };
 
 export default function Topbar() {
@@ -23,12 +24,12 @@ export default function Topbar() {
       <h1 className="text-base font-semibold text-foreground">{title}</h1>
       <div className="flex items-center gap-3">
         {user?.organization && (
-          <span className="text-sm text-muted-foreground">{user.organization.name}</span>
+          <span className="text-sm text-muted-foreground mr-1">{user.organization.name}</span>
         )}
         {plan && (
           <Badge
             label={plan}
-            variant={plan === 'Pro' ? 'purple' : 'gray'}
+            variant={plan === 'Enterprise' ? 'info' : plan === 'Pro' ? 'success' : 'gray'}
           />
         )}
       </div>
