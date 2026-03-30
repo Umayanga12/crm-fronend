@@ -1,5 +1,5 @@
 import { NavLink, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Building2, Activity, LogOut } from 'lucide-react';
+import { LayoutDashboard, Building2, Activity, LogOut, Users } from 'lucide-react';
 import useAuthStore from '@/store/useAuthStore';
 import Badge from '@/components/crm/Badge';
 import { cn } from '@/lib/utils';
@@ -43,6 +43,22 @@ export default function Sidebar() {
             {item.label}
           </NavLink>
         ))}
+        {user?.role === 'Admin' && (
+          <NavLink
+            to="/team"
+            className={({ isActive }) =>
+              cn(
+                'flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors',
+                isActive
+                  ? 'bg-primary/10 text-primary'
+                  : 'text-muted-foreground hover:bg-secondary hover:text-foreground'
+              )
+            }
+          >
+            <Users className="h-4 w-4" />
+            Team
+          </NavLink>
+        )}
       </nav>
 
       <div className="border-t border-border p-4 space-y-3">
