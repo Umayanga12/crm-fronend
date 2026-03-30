@@ -1,27 +1,44 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { Toaster } from "@/components/ui/toaster";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import Index from "./pages/Index.tsx";
-import NotFound from "./pages/NotFound.tsx";
+import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
+import { Toaster } from 'sonner';
+import useAuthStore from './store/useAuthStore';
+import { ProtectedRoute, PublicRoute } from './routes/ProtectedRoute';
+import AppLayout from './components/layout/AppLayout';
+import LoginPage from './pages/LoginPage';
+import DashboardPage from './pages/DashboardPage';
+import CompaniesPage from './pages/CompaniesPage';
+import CompanyDetailPage from './pages/CompanyDetailPage';
+import ActivityLogPage from './pages/ActivityLogPage';
+import NotFound from './pages/NotFound';
+import { useEffect, useState } from 'react';
 
-const queryClient = new QueryClient();
+function App() {
+  const [ready, setReady] = useState(false);
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
+  useEffect(() => {
+    useAuthStore.getState().loadFromStorage();
+    setReady(true);
+  }, []);
+
+  if (!ready) return null;
+
+  return (
+    <>
+      <Toaster position="top-right" richColors />
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Index />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          <Route path="/login" element={<PublicRoute><LoginPage /></PublicRoute>} />
+          <Route path="/" element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>
+            <Route index element={<Navigate to="/dashboard" replace />} />
+            <Route path="dashboard" element={<DashboardPage />} />
+            <Route path="companies" element={<CompaniesPage />} />
+            <Route path="companies/:id" element={<CompanyDetailPage />} />
+            <Route path="activity-logs" element={<ActivityLogPage />} />
+          </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+    </>
+  );
+}
 
 export default App;
