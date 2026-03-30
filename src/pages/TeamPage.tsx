@@ -5,6 +5,8 @@ import { userService, TeamMember } from '@/services/userService';
 import Button from '@/components/crm/Button';
 import Badge from '@/components/crm/Badge';
 import Pagination from '@/components/crm/Pagination';
+import Modal from '@/components/crm/Modal';
+import useAuthStore from '@/store/useAuthStore';
 
 export default function TeamPage() {
   const [members, setMembers] = useState<TeamMember[]>([]);
@@ -12,6 +14,10 @@ export default function TeamPage() {
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(true);
   const [isCreating, setIsCreating] = useState(false);
+  const [memberToDelete, setMemberToDelete] = useState<TeamMember | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const currentUser = useAuthStore((s) => s.user);
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -60,14 +66,18 @@ export default function TeamPage() {
     }
   };
 
-  const handleDelete = async (id: number) => {
-    if (!confirm('Are you sure you want to remove this member?')) return;
+  const handleDelete = async () => {
+    if (!memberToDelete) return;
+    setIsDeleting(true);
     try {
-      await userService.deleteUser(id);
+      await userService.deleteUser(memberToDelete.id);
       toast.success('Team member removed');
       fetchMembers();
+      setMemberToDelete(null);
     } catch {
       toast.error('Failed to remove member. You cannot delete yourself.');
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -193,12 +203,14 @@ export default function TeamPage() {
                     <Badge label={member.role} variant={member.role === 'Admin' ? 'info' : member.role === 'Manager' ? 'success' : 'gray'} />
                   </td>
                   <td className="px-6 py-4 text-right">
-                    <button
-                      onClick={() => handleDelete(member.id)}
-                      className="text-destructive hover:text-destructive/80 text-xs font-medium transition-colors"
-                    >
-                      Remove
-                    </button>
+                    {member.id !== currentUser?.id && (
+                      <button
+                        onClick={() => setMemberToDelete(member)}
+                        className="text-destructive hover:text-destructive/80 text-xs font-medium transition-colors"
+                      >
+                        Remove
+                      </button>
+                    )}
                   </td>
                 </tr>
               ))}
@@ -216,6 +228,23 @@ export default function TeamPage() {
       {totalPages > 1 && (
         <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
       )}
+
+      <Modal
+        isOpen={!!memberToDelete}
+        onClose={() => setMemberToDelete(null)}
+        title="Remove Team Member"
+        footer={
+          <>
+            <Button variant="secondary" onClick={() => setMemberToDelete(null)}>Cancel</Button>
+            <Button variant="danger" loading={isDeleting} onClick={handleDelete}>Remove</Button>
+          </>
+        }
+      >
+        <p className="text-sm text-foreground">
+          Are you sure you want to remove <strong>{memberToDelete?.first_name} {memberToDelete?.last_name}</strong> from your organization?
+        </p>
+        <p className="mt-2 text-sm text-muted-foreground">This action cannot be undone. They will immediately lose access to the CRM data.</p>
+      </Modal>
     </div>
   );
 }

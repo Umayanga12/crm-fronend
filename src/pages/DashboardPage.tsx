@@ -65,9 +65,20 @@ export default function DashboardPage() {
   }, []);
 
   const logColumns = [
-    { key: 'user', label: 'User', render: (r: Record<string, unknown>) => String((r.user as string) ?? '') },
+    { 
+      key: 'user', 
+      label: 'User', 
+      render: (r: Record<string, unknown>) => {
+        const u = r.user as { first_name?: string; last_name?: string; email: string; } | null;
+        if (!u) return 'System';
+        if (u.first_name || u.last_name) {
+          return `${u.first_name || ''} ${u.last_name || ''}`.trim();
+        }
+        return u.email;
+      }
+    },
     { key: 'action', label: 'Action' },
-    { key: 'model', label: 'Model' },
+    { key: 'model_name', label: 'Model' },
     { key: 'object_id', label: 'Object ID' },
     {
       key: 'timestamp',
