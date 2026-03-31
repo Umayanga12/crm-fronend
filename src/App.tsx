@@ -13,6 +13,7 @@ import ContactsPage from './pages/ContactsPage';
 import PricingPage from './pages/PricingPage';
 import TeamPage from './pages/TeamPage';
 import ProfilePage from './pages/ProfilePage';
+import PermissionDenied from './pages/PermissionDenied';
 import NotFound from './pages/NotFound';
 import { useEffect, useState } from 'react';
 
@@ -33,15 +34,37 @@ function App() {
         <Routes>
           <Route path="/login" element={<PublicRoute><LoginPage /></PublicRoute>} />
           <Route path="/signup" element={<PublicRoute><SignupPage /></PublicRoute>} />
+          <Route path="/unauthorized" element={<PermissionDenied />} />
           <Route path="/" element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>
             <Route index element={<Navigate to="/dashboard" replace />} />
             <Route path="dashboard" element={<DashboardPage />} />
             <Route path="companies" element={<CompaniesPage />} />
             <Route path="companies/:id" element={<CompanyDetailPage />} />
             <Route path="contacts" element={<ContactsPage />} />
-            <Route path="pricing" element={<PricingPage />} />
-            <Route path="activity-logs" element={<ActivityLogPage />} />
-            <Route path="team" element={<TeamPage />} />
+            <Route 
+              path="pricing" 
+              element={
+                <ProtectedRoute allowedRoles={['Admin']}>
+                  <PricingPage />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="activity-logs" 
+              element={
+                <ProtectedRoute allowedRoles={['Admin']}>
+                  <ActivityLogPage />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="team" 
+              element={
+                <ProtectedRoute allowedRoles={['Admin', 'Manager']}>
+                  <TeamPage />
+                </ProtectedRoute>
+              } 
+            />
             <Route path="profile" element={<ProfilePage />} />
           </Route>
           <Route path="*" element={<NotFound />} />

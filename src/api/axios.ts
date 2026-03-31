@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { toast } from 'sonner';
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
@@ -19,6 +20,10 @@ api.interceptors.response.use(
       localStorage.removeItem('auth_token');
       localStorage.removeItem('auth_user');
       window.location.href = '/login';
+    } else if (error.response?.status === 403) {
+      toast.error('Permission Denied', {
+        description: 'You do not have permission to perform this action.',
+      });
     }
     return Promise.reject(error);
   }
