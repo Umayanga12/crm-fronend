@@ -15,7 +15,7 @@ import EmptyState from '@/components/crm/EmptyState';
 import { toast } from 'sonner';
 
 interface Company {
-  id: number; name: string; industry: string; country: string; logo: string | null; created_at: string;
+  id: number; name: string; industry: string; country: string; logo: string | null; logo_url: string | null; created_at: string;
 }
 
 interface Contact {
@@ -188,8 +188,8 @@ export default function CompanyDetailPage() {
       </Link>
 
       <div className="flex items-start gap-5 rounded-lg border border-border bg-card p-6">
-        {company.logo ? (
-          <img src={company.logo} alt={company.name} className="h-20 w-20 rounded-lg object-cover border border-border" />
+        {company.logo_url ? (
+          <img src={company.logo_url} alt={company.name} className="h-20 w-20 rounded-lg object-cover border border-border" />
         ) : (
           <div className="flex h-20 w-20 items-center justify-center rounded-lg bg-primary/10 text-2xl font-bold text-primary">
             {company.name.charAt(0)}

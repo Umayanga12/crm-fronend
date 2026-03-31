@@ -17,6 +17,7 @@ interface Company {
   industry: string;
   country: string;
   logo: string | null;
+  logo_url: string | null;
   created_at: string;
   [key: string]: unknown;
 }
@@ -34,7 +35,7 @@ function CompanyForm({
   const [industry, setIndustry] = useState(initial?.industry ?? '');
   const [country, setCountry] = useState(initial?.country ?? '');
   const [logoFile, setLogoFile] = useState<File | null>(null);
-  const [preview, setPreview] = useState<string | null>(initial?.logo ?? null);
+  const [preview, setPreview] = useState<string | null>(initial?.logo_url ?? null);
   const [nameError, setNameError] = useState('');
 
   const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -172,8 +173,8 @@ export default function CompaniesPage() {
       key: 'logo',
       label: '',
       render: (r: Company) =>
-        r.logo ? (
-          <img src={r.logo} alt={r.name} className="h-8 w-8 rounded-full object-cover" />
+        r.logo_url ? (
+          <img src={r.logo_url} alt={r.name} className="h-8 w-8 rounded-full object-cover" />
         ) : (
           <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-xs font-medium text-primary">
             {initials(r.name)}

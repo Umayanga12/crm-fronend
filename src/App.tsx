@@ -12,6 +12,7 @@ import ActivityLogPage from './pages/ActivityLogPage';
 import ContactsPage from './pages/ContactsPage';
 import PricingPage from './pages/PricingPage';
 import TeamPage from './pages/TeamPage';
+import ProfilePage from './pages/ProfilePage';
 import NotFound from './pages/NotFound';
 import { useEffect, useState } from 'react';
 
@@ -41,6 +42,7 @@ function App() {
             <Route path="pricing" element={<PricingPage />} />
             <Route path="activity-logs" element={<ActivityLogPage />} />
             <Route path="team" element={<TeamPage />} />
+            <Route path="profile" element={<ProfilePage />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>

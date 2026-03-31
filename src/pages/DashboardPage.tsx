@@ -4,6 +4,8 @@ import { Building2, Users, Activity } from 'lucide-react';
 import useAuthStore from '@/store/useAuthStore';
 import { companyService } from '@/services/companyService';
 import { activityService } from '@/services/activityService';
+import { contactService } from '@/services/contactService';
+import { userService } from '@/services/userService';
 import DataTable from '@/components/crm/DataTable';
 import { cn } from '@/lib/utils';
 
@@ -39,6 +41,7 @@ export default function DashboardPage() {
   const user = useAuthStore((s) => s.user);
   const navigate = useNavigate();
   const [companyCount, setCompanyCount] = useState<number | null>(null);
+  const [teamCount, setTeamCount] = useState<number | null>(null);
   const [contactCount, setContactCount] = useState<number | null>(null);
   const [activityCount, setActivityCount] = useState<number | null>(null);
   const [recentLogs, setRecentLogs] = useState<Record<string, unknown>[]>([]);
@@ -47,12 +50,15 @@ export default function DashboardPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [companies, activities] = await Promise.all([
+        const [companies, team, contacts, activities] = await Promise.all([
           companyService.getCompanies({ page: 1 }),
+          userService.getUsers({ page: 1 }),
+          contactService.getAllContacts({ page: 1 }),
           activityService.getActivityLogs({ page: 1 }),
         ]);
         setCompanyCount(companies.count ?? companies.results?.length ?? 0);
-        setContactCount(companies.contact_count ?? 0);
+        setTeamCount(team.count ?? team.results?.length ?? 0);
+        setContactCount(contacts.count ?? contacts.results?.length ?? 0);
         setActivityCount(activities.count ?? activities.results?.length ?? 0);
         setRecentLogs((activities.results ?? []).slice(0, 5));
       } catch {
@@ -96,9 +102,10 @@ export default function DashboardPage() {
         Welcome, {user?.email}
       </h2>
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard icon={Building2} label="Total Companies" value={companyCount} onClick={() => navigate('/companies')} />
-        <StatCard icon={Users} label="Total Contacts" value={contactCount} onClick={() => navigate('/companies')} />
+        <StatCard icon={Users} label="Team Members" value={teamCount} onClick={() => navigate('/team')} />
+        <StatCard icon={Users} label="Total Contacts" value={contactCount} onClick={() => navigate('/contacts')} />
         <StatCard icon={Activity} label="Recent Activity" value={activityCount} onClick={() => navigate('/activity-logs')} />
       </div>
 
